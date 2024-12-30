@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отзеркалить слова</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            position: relative;
+        }
+        .container {
+            text-align: center;
+        }
+        input, button {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 10px;
+            margin: 5px;
+        }
+        input::placeholder {
+            color: #bbb;
+        }
+        .toggle-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .result-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #result {
+            margin-right: 10px;
+        }
+        .notification {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border: 1px solid #555;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="toggle-button">
+        <button onclick="toggleMode()">Переключить режим</button>
+        <button onclick="toggleLanguage()">Сменить язык</button>
+    </div>
+    <div class="container">
+        <h1 id="title">Отзеркалить слова</h1>
+        <input type="text" id="inputText" placeholder="Введите текст" onkeydown="handleKeyDown(event)">
+        <button onclick="reverseText()" id="reverseButton">Отзеркалить</button>
+        <div class="result-container">
+            <p id="result"></p>
+            <button onclick="copyText()" id="copyButton">Скопировать</button>
+        </div>
+    </div>
+    <div class="notification" id="notification">Текст скопирован!</div>
+
+    <script>
+        function reverseText() {
+            const input = document.getElementById('inputText').value;
+            const reversed = input.split('').reverse().join('');
+            document.getElementById('result').innerText = reversed;
+        }
+
+        function copyText() {
+            const result = document.getElementById('result').innerText;
+            navigator.clipboard.writeText(result).then(() => {
+                showNotification('Текст скопирован!');
+            }).catch(err => {
+                console.error('Ошибка копирования текста: ', err);
+            });
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.innerText = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+
+        function toggleMode() {
+            const body = document.body;
+            if (body.style.backgroundColor === 'white') {
+                body.style.backgroundColor = '#121212';
+                body.style.color = '#ffffff';
+            } else {
+                body.style.backgroundColor = 'white';
+                body.style.color = 'black';
+            }
+        }
+
+        function toggleLanguage() {
+            const title = document.getElementById('title');
+            const input = document.getElementById('inputText');
+            const reverseButton = document.getElementById('reverseButton');
+            const copyButton = document.getElementById('copyButton');
+            const currentLang = document.documentElement.lang;
+
+            if (currentLang === 'ru') {
+                document.documentElement.lang = 'en';
+                title.innerText = 'Mirror Words';
+                input.placeholder = 'Enter text';
+                reverseButton.innerText = 'Mirror';
+                copyButton.innerText = 'Copy';
+            } else {
+                document.documentElement.lang = 'ru';
+                title.innerText = 'Отзеркалить слова';
+                input.placeholder = 'Введите текст';
+                reverseButton.innerText = 'Отзеркалить';
+                copyButton.innerText = 'Скопировать';
+            }
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter') {
+                reverseText();
+            }
+        }
+    </script>
+</body>
+</html>
